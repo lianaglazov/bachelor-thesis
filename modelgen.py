@@ -22,8 +22,6 @@ class KripkeRailway:
 
     def generate_states(self):
         base_locations = self.stations + self.tracks # a train can be either at a station or on a track
-        # get the combinations of all trains
-        # for i in range(1, self.num_trains + 1):
         train_ids = []
         n = self.num_trains
         for j in range(1, n+1):
@@ -63,12 +61,6 @@ class KripkeRailway:
                         ns = k
                 self.transitions.append((state, ns))
 
-            # for new_state in self.add_train(state):
-            #     for k, s in self.states.items():
-            #         if s == new_state:
-            #             ns = k
-            #     self.transitions.append((state, ns))
-
     def get_possible_moves(self, state_key):
         possible_moves = []
         state = self.states[state_key]
@@ -89,22 +81,6 @@ class KripkeRailway:
                         if self.validate(new_state):
                             possible_moves.append(new_state)
         return possible_moves
-
-    # for the transitions to states with more trains
-    # we can add a train to a station that is not full
-    def add_train(self, state_key):
-        state = self.states[state_key]
-        existing_trains = {label[:2] for label in state}
-        available_trains = {f"t{i+1}" for i in range(self.num_trains)} - existing_trains
-        possible_additions = []
-
-        for train in available_trains:
-            for station in self.stations:
-                if sum(1 for s in state if s[2:] == station) < 3:
-                    new_state = state | {f"{train}{station}"}
-                    if self.validate(new_state):
-                        possible_additions.append(new_state)
-        return possible_additions
     
     def print_model(self):
         print(f"{len(self.states)} states")
